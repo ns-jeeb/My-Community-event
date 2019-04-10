@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/invitation_content">
+
+        <android.support.v7.widget.RecyclerView
+        android:id="@+id/user_ids"
+        android:layout_width="match_parent"
+        app:layout_constraintHeight_percent=".93"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_complete"
+        tools:background="@color/colorAccent"
+        android:layout_marginTop="15dp"/>
+        <!--user_recycler_view-->
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_complete"
+            android:text="complete"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

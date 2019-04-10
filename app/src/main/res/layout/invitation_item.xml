@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp">
+
+        <TextView
+            android:id="@+id/txt_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_title_of_invitation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="invitation"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/scroller_view_preview"
+            app:layout_constraintTop_toBottomOf="@+id/txt_message"
+            android:visibility="gone">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/wedding_card_preview_layout">
+
+                <View
+                    android:background="@drawable/bg_khatam_al_quran_preview"
+                    android:id="@+id/bride_groom"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:id="@+id/txt_title_bride_groom"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:text="Jahn and marry"/>
+
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:id="@+id/img_bride_groom"
+                    android:background="@color/design_default_color_primary_dark"
+                    android:src="@drawable/ic_launcher_background"
+                    app:layout_constraintTop_toBottomOf="@id/txt_title_bride_groom"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="1"
+                    android:id="@+id/b_g_first_name_layout"
+                    app:layout_constraintTop_toBottomOf="@id/img_bride_groom"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".45"
+                        android:textSize="20sp"
+                        android:id="@+id/txt_bride_first_name"
+                        android:layout_marginStart="15dp"
+                        tools:text="@string/first_name"
+                        android:layout_marginLeft="15dp"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".45"
+                        android:id="@+id/txt_groom_first_name"
+                        android:textSize="20sp"
+                        android:textColor="@color/pre_view_text_top_color"
+                        android:paddingTop="30dp"
+                        android:gravity="end"
+                        tools:text="@string/first_name"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_and"
+                    android:layout_centerHorizontal="true"
+                    app:layout_constraintTop_toBottomOf="@+id/b_g_first_name_layout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/b_g_last_name_layout"
+                    android:weightSum="1"
+                    app:layout_constraintTop_toBottomOf="@+id/b_g_first_name_layout"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".45"
+                        android:textSize="20sp"
+                        android:id="@+id/txt_bride_last_name"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/last_name"
+                        android:layout_marginLeft="15dp"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".45"
+                        android:id="@+id/txt_groom_last_name"
+                        android:textSize="20sp"
+                        android:textColor="@color/pre_view_text_top_color"
+                        android:paddingTop="30dp"
+                        android:gravity="end"
+                        tools:text="@string/last_name"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="30sp"
+                    android:paddingTop="30dp"
+                    android:id="@+id/txt_message_inv"
+                    app:layout_constraintTop_toBottomOf="@+id/b_g_last_name_layout"
+                    android:textColor="@color/pre_view_text_top_color"
+                    android:gravity="center_horizontal"
+                    android:text="@string/txt_wedding_message"/>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingTop="30dp"
+                    android:id="@+id/txt_date"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_message_inv"
+                    android:textColor="@color/pre_view_text_top_color"
+                    android:gravity="center_horizontal"
+                    tools:text="date"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingTop="30dp"
+                    android:id="@+id/txt_time"
+                    android:textColor="@color/pre_view_text_top_color"
+                    android:gravity="center_horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_date"
+                    tools:text="Time"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingTop="30dp"
+                    android:textColor="@color/pre_view_text_top_color"
+                    android:id="@+id/txt_name_of_place"
+                    android:gravity="center_horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_time"
+                    tools:text="Location"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingTop="30dp"
+                    android:textColor="@color/pre_view_text_top_color"
+                    android:id="@+id/txt_address"
+                    android:gravity="center_horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_name_of_place"
+                    tools:text="Location"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingTop="30dp"
+                    android:textColor="@color/pre_view_text_top_color"
+                    android:id="@+id/txt_city_of_postal_province"
+                    android:gravity="center_horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_address"
+                    tools:text="Location"/>
+
+            </android.support.constraint.ConstraintLayout>
+        </ScrollView>
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/date_time_layout"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:weightSum="1"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:layout_constraintTop_toTopOf="parent"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--android:layout_marginStart="15dp"-->
+            <!--android:layout_marginLeft="15dp"-->
+            <!--android:visibility="gone"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/txt_invitation_date"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="0.3"-->
+                <!--android:text="@string/date"-->
+                <!--tools:text="invitation"-->
+                <!--android:layout_marginStart="15dp"-->
+                <!--android:layout_marginLeft="15dp"/>-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/txt_invitation_time"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="0.3"-->
+                <!--android:text="@string/time"-->
+                <!--tools:text="invitation"-->
+                <!--android:layout_marginStart="15dp"-->
+                <!--android:layout_marginLeft="15dp"/>-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/user_avatar"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:layout_weight="0.4"-->
+                <!--android:layout_gravity="end"-->
+                <!--android:src="@drawable/ic_dou"/>-->
+
+
+        <!--</LinearLayout>-->
+
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

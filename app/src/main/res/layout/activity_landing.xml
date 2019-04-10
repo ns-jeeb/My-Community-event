@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/landing_contain"
+        android:padding="@dimen/activity_horizontal_margin">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="in order to use this app you have to register and join to a community"/>
+        <ProgressBar
+            android:id="@+id/login_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:progress="25"
+            style="@android:style/Widget.ProgressBar"
+            android:layout_marginBottom="8dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            tools:visibility="visible"
+            android:visibility="gone"/>
+
+        <!--<android.support.constraint.ConstraintLayout-->
+            <!--android:id="@+id/comm_create_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:visibility="gone"-->
+            <!--tools:context=".LandingActivity"-->
+            <!--tools:visibility="visible">-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/community_name"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--app:layout_constraintTop_toTopOf="parent"-->
+                <!--android:hint="@string/community"/>-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/comm_password"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="Password"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/community_name"/>-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/comm_desc"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="Community Description"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/comm_password"/>-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/comm_announcement"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="Community announcement"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/comm_desc"/>-->
+        <!--</android.support.constraint.ConstraintLayout>-->
+
+        <!--<android.support.constraint.ConstraintLayout-->
+            <!--android:id="@+id/comm_list_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:visibility="visible"-->
+            <!--tools:context=".LandingActivity"-->
+            <!--tools:visibility="visible">-->
+
+            <!--<android.support.v7.widget.RecyclerView-->
+                <!--android:id="@+id/comm_list"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_marginTop="15dp"/>-->
+
+        <!--</android.support.constraint.ConstraintLayout>-->
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            app:fabSize="normal"
+            app:maxImageSize="60dp"
+            app:backgroundTint="@color/colorPrimary"
+            app:rippleColor="@color/colorPrimary"
+            app:useCompatPadding="true"
+            app:srcCompat="@drawable/ic_add_black_24dp"
+            tools:ignore="VectorDrawableCompat"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="start|bottom"
+            app:fabSize="normal"
+            app:maxImageSize="40dp"
+            app:backgroundTint="@color/colorPrimary"
+            app:useCompatPadding="true"
+            app:srcCompat="@drawable/ic_lock"
+            tools:ignore="VectorDrawableCompat"/>
+    </RelativeLayout>
+
+
+</layout>
