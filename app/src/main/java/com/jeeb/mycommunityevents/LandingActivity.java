@@ -47,7 +47,19 @@ public class LandingActivity extends AppCompatActivity implements CommunityHelpe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this,R.layout.activity_landing);
+        preferences = getSharedPreferences("loggedIn", Context.MODE_PRIVATE);
+        mToken = preferences.getString("token","");
+        registered = preferences.getBoolean("registered",false);
 
+        if (!TextUtils.isEmpty(mToken)){
+            mLoginHelper.getCurrentUser(mToken, mAPIInterface);
+            Intent intent = new Intent(LandingActivity.this, MainActivity.class);
+            startActivity(intent);
+            AppUtil.showProgress(true,this,mBinding.loginProgress,mBinding.landingContain);
+        }else {
+            Intent intent = new Intent(LandingActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
         if (mAPIInterface == null) {
             mAPIInterface = RetrofitAPIClient.getClient().create(RetrofitAPIInterface.class);
         }
@@ -57,7 +69,6 @@ public class LandingActivity extends AppCompatActivity implements CommunityHelpe
         if (mCommunityHelper == null){
             mCommunityHelper = new CommunityHelper();
         }
-
         preferences = getSharedPreferences("loggedIn", Context.MODE_PRIVATE);
         mToken = preferences.getString("token","");
         registered = preferences.getBoolean("registered",false);
@@ -66,17 +77,8 @@ public class LandingActivity extends AppCompatActivity implements CommunityHelpe
         mBinding.fabLogin.setOnClickListener(this);
         mCommunityHelper.setCreate(this);
         mCommunityHelper.setLoad(this);
-
         mAPIInterface = RetrofitAPIClient.getClient().create(RetrofitAPIInterface.class);
 //        mCommunityHelper.getCommunities(MASTER_KEY,"",mAPIInterface);
-
-        if (!TextUtils.isEmpty(mToken)){
-            mLoginHelper.getCurrentUser(mToken, mAPIInterface);
-            AppUtil.showProgress(true,this,mBinding.loginProgress,mBinding.landingContain);
-        }else {
-            Intent intent = new Intent(LandingActivity.this, LoginActivity.class);
-            startActivity(intent);
-        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -123,7 +125,6 @@ public class LandingActivity extends AppCompatActivity implements CommunityHelpe
         if (!TextUtils.isEmpty(mToken)&& error == null) {
 //            mCommunityHelper.getCommunities(mToken, "1234567", mAPIInterface);
 //            AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.landingContain);
-
         }else {
             Intent intent = new Intent(LandingActivity.this, LoginActivity.class);
             startActivity(intent);
@@ -151,7 +152,6 @@ public class LandingActivity extends AppCompatActivity implements CommunityHelpe
 //            mBinding.commList.setAdapter(adapter);
         }
     }
-
     @Override
     public void onFieldSavedCommunity() {
         AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.landingContain);
@@ -183,16 +183,13 @@ public class LandingActivity extends AppCompatActivity implements CommunityHelpe
 //            mBinding.commListLayout.setVisibility(View.VISIBLE);
         }
     }
-
     private boolean setCommunityInfo(){
         // TODO: 1/17/2019 should validate for empty EditText if not empty return true.
         mCommunity = new Community.Count();
 //        mCommunity.setCommDesc(mBinding.commDesc.toString());
 //        mCommunity.setCommName(mBinding.communityName.toString());
-
         return true;
     }
-
     private class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.CommViewHolder> implements OnCommunityItemClickListener{
 
         private OnCommunityItemClickListener mItemClickListener;

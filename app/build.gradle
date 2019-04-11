@@ -50,3 +50,7 @@ android {
         implementation 'com.google.firebase:firebase-core:16.0.7'
     }
 }
+
+dependencies {
+    implementation 'com.android.support:support-v4:28.+'
+}

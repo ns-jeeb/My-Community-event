@@ -1,21 +1,17 @@
 package com.jeeb.mycommunityevents.authintication;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
@@ -23,13 +19,11 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -41,25 +35,21 @@ import com.jeeb.mycommunityevents.MainActivity;
 import com.jeeb.mycommunityevents.R;
 import com.jeeb.mycommunityevents.RetrofitAPIClient;
 import com.jeeb.mycommunityevents.RetrofitAPIInterface;
-import com.jeeb.mycommunityevents.authintication.LoginHelper;
-import com.jeeb.mycommunityevents.authintication.User;
 import com.jeeb.mycommunityevents.databinding.ActivityLoginBinding;
 import com.jeeb.mycommunityevents.utils.AppUtil;
 import com.jeeb.mycommunityevents.utils.ConstraintValues;
 
-import static android.Manifest.permission.READ_CONTACTS;
 @SuppressLint("RestrictedApi")
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>,OnClickListener,LoginHelper.OnSaveUserInShearedPref,
-        LoginHelper.OnUserLogin, LoginHelper.OnGetCurrentUser {
+        LoginHelper.OnUserLogin, LoginHelper.OnGetCurrentUser, RegisterationFragment.OnFragmentInteractionListener {
 
     private ActivityLoginBinding mBinding;
     private RetrofitAPIInterface mAPIInterface;
+    private SharedPreferences.Editor editor;
+    private LoginHelper helper;
     private SharedPreferences preferences;
     private boolean registered;
-    private LoginHelper helper;
-    private SharedPreferences.Editor editor;
-    private String mEmail, mPass;
-    private User mUser;
+    private Fragment fragment;
 
 
     RadioGroup.OnCheckedChangeListener mRadioGender;
@@ -69,12 +59,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             Toast.makeText(LoginActivity.this, "this will save your user name password", Toast.LENGTH_SHORT).show();
         }
     };
+    private String mToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_login);
-        populateAutoComplete();
+        mBinding.fabCreateAccount.setVisibility(View.GONE);
         if (mAPIInterface == null) {
             mAPIInterface = RetrofitAPIClient.getClient().create(RetrofitAPIInterface.class);
         }
@@ -84,142 +75,73 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         preferences = getSharedPreferences("loggedIn", Context.MODE_PRIVATE);
         registered = preferences.getBoolean("registered", false);
         mBinding.rememberMe.setOnCheckedChangeListener(mRememberMe);
+        mToken = preferences.getString("token","");
 
-        if (!registered) {
-            mBinding.loginForm.setVisibility(View.GONE);
-            mBinding.joinMember.joinForm.setVisibility(View.VISIBLE);
-            mBinding.genderGroup.setVisibility(View.VISIBLE);
-            mBinding.rememberMe.setVisibility(View.GONE);
-        } else {
-            mBinding.loginForm.setVisibility(View.VISIBLE);
-            mBinding.joinMember.joinForm.setVisibility(View.GONE);
-            mBinding.genderGroup.setVisibility(View.GONE);
-            mBinding.rememberMe.setVisibility(View.VISIBLE);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.auth_main_layout);
+        if (fragment == null){
+            fragment = new LoginFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.auth_main_layout,fragment).commit();
         }
-
         mBinding.fabLock.setOnClickListener(this);
         mBinding.btnJoinCommunity.setOnClickListener(this);
-        mBinding.btnSubmit.setOnClickListener(this);
+        mBinding.fabCreateAccount.setOnClickListener(this);
     }
-
     @Override
     protected void onStart() {
         super.onStart();
     }
-
     @Override
     protected void onResume() {
+        mBinding.fabLock.setVisibility(View.VISIBLE);
+        mBinding.btnJoinCommunity.setVisibility(View.VISIBLE);
         super.onResume();
     }
-
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
-
-//        getLoaderManager().initLoader(0, null, this);
-    }
-
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mBinding.loginEmail, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, ConstraintValues.REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, ConstraintValues.REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == ConstraintValues.REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
-        }
-    }
-
-    private boolean validateEmailField(EditText emailField) {
-        emailField.setError(null);
-        mEmail = emailField.getText().toString();
-        // Store values at the time of the login attempt.
-        // Check for a valid mEmail address.
-        if (TextUtils.isEmpty(mEmail)&& !isEmailValid(mEmail)) {
-            emailField.setError(getString(R.string.error_field_required));
-            emailField.requestFocus();
-//            showProgress(true);
-            return false;
-        }
-        return true;
-    }
-
-    private boolean validatePasswordField(EditText passField) {
-        // Reset errors.
-        passField.setError(null);
-        mPass = passField.getText().toString();
-
-        // Check for a valid password, if the user entered one.
-        if (TextUtils.isEmpty(mPass) || !isPasswordValid(mPass)) {
-            passField.setError(getString(R.string.error_invalid_password));
-            passField.requestFocus();
-//            showProgress(true);
-            return false;
-        }
-        return true;
-    }
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 6;
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        if (requestCode == ConstraintValues.REQUEST_READ_CONTACTS) {
+//            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+////                populateAutoComplete();
+//            }
+//        }
+//    }
+//    private boolean isEmailValid(String email) {
+//        //TODO: Replace this with your own logic
+//        return email.contains("@");
+//    }
+//    private boolean isPasswordValid(String password) {
+//        //TODO: Replace this with your own logic
+//        return password.length() > 6;
+//    }
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_longAnimTime);
-//            mBinding.loginForm.setVisibility(show ? View.GONE : View.VISIBLE);
-            mBinding.loginProgress.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mBinding.loginForm.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-            mBinding.loginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-            mBinding.loginProgress.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mBinding.loginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mBinding.loginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-//            mBinding.loginForm.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
+//    private void showProgress(final boolean show) {
+//        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+//        // for very easy animations. If available, use these APIs to fade-in
+//        // the progress spinner.
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+//            int shortAnimTime = getResources().getInteger(android.R.integer.config_longAnimTime);
+////            mBinding.loginForm.setVisibility(show ? View.GONE : View.VISIBLE);
+//            mBinding.loginProgress.animate().setDuration(shortAnimTime).alpha(
+//                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+////                    mBinding.loginForm.setVisibility(show ? View.GONE : View.VISIBLE);
+//                }
+//            });
+//            mBinding.loginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+//            mBinding.loginProgress.animate().setDuration(shortAnimTime).alpha(
+//                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    mBinding.loginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+//                }
+//            });
+//        } else {
+//            // The ViewPropertyAnimator APIs are not available, so simply show
+//            // and hide the relevant UI components.
+//            mBinding.loginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+////            mBinding.loginForm.setVisibility(show ? View.GONE : View.VISIBLE);
+//        }
+//    }
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
@@ -253,7 +175,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(LoginActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-        mBinding.loginEmail.setAdapter(adapter);
+//        mBinding.loginEmail.setAdapter(adapter);
     }
     @Override
     public void onBackPressed() {
@@ -267,89 +189,60 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         helper.setOnUserLogin(this);
         helper.setCurrentUser(this);
         editor = preferences.edit();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.auth_main_layout);
         if (mBinding.fabLock == view) {
-
-            if (validateEmailField(mBinding.loginEmail) && validatePasswordField(mBinding.loginPassword)) {
-                loginUser(mEmail, mPass);
-            } else {
-                mBinding.joinMember.joinForm.setVisibility(View.GONE);
-                mBinding.loginForm.setVisibility(View.VISIBLE);
-                mBinding.fabLock.setVisibility(View.VISIBLE);
-                mBinding.btnSubmit.setVisibility(View.GONE);
-                showProgress(false);
+            if (fragment instanceof LoginFragment){
+                AppUtil.showProgress(true,this,mBinding.loginProgress,mBinding.authBtnLayout);
+                ((LoginFragment)fragment).loginUser();
             }
-        } else if (view == mBinding.btnJoinCommunity) {
-            mBinding.joinMember.joinForm.setVisibility(View.VISIBLE);
-            mBinding.btnSubmit.setVisibility(View.VISIBLE);
-            mBinding.loginForm.setVisibility(View.GONE);
-            mBinding.fabLock.setVisibility(View.GONE);
-            showProgress(false);
-        } else if (view == mBinding.btnSubmit && setData()!= null) {
-            helper.register(setData(), mAPIInterface);
-            showProgress(true);
-        } else {
-            editor.putBoolean("registered", false);
-            mBinding.joinMember.joinForm.setVisibility(View.GONE);
-            mBinding.loginForm.setVisibility(View.VISIBLE);
-            mBinding.fabLock.setVisibility(View.VISIBLE);
-            mBinding.btnSubmit.setVisibility(View.GONE);
-        }
-    }
-    public User setData(){
-        mUser = new User();
-        User.UserCommId userCommId = new User.UserCommId();
 
-        if (!validatePasswordField(mBinding.joinMember.joinPassword) || !validateEmailField(mBinding.joinMember.joinEmail) ||
-                !getErrorField(mBinding.joinMember.fName) || !getErrorField(mBinding.joinMember.joinLName) ||
-                !getErrorField(mBinding.joinMember.joinAddress) || !getErrorField(mBinding.joinMember.joinCity) ||
-                !getErrorField(mBinding.joinMember.joinPostalCode) || !getErrorField(mBinding.joinMember.joinProvince) ||
-                !getErrorField(mBinding.joinMember.joinHomePho) || !getErrorField(mBinding.joinMember.joinCellPho) ||
-                !getErrorField(mBinding.joinMember.joinAge) || !getErrorField(mBinding.joinMember.joinCommunity)) {
-            return null;
-        } else {
-            userCommId.set$oid(mBinding.joinMember.joinCommunity.getText().toString());
-            mUser.setEmail(mEmail);
-            mUser.setPassword(mPass);
-            mUser.setFName(mBinding.joinMember.fName.getText().toString());
-            mUser.setLName(mBinding.joinMember.joinLName.getText().toString());
-            mUser.setAddress(mBinding.joinMember.joinAddress.getText().toString());
-            mUser.setCity(mBinding.joinMember.joinCity.getText().toString());
-            mUser.setPostalCode(mBinding.joinMember.joinPostalCode.getText().toString());
-            mUser.setProvince(mBinding.joinMember.joinProvince.getText().toString());
-            mUser.setHomePhone(mBinding.joinMember.joinHomePho.getText().toString());
-            mUser.setCellPhone(mBinding.joinMember.joinCellPho.getText().toString());
-            mUser.setUserCommId(mBinding.joinMember.joinCommunity.getText().toString());
-            mUser.setGender("");
-            mUser.setAge(mBinding.joinMember.joinAge.getText().toString());
+        } else if (view == mBinding.btnJoinCommunity) {
+            fragment = new RegisterationFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.auth_main_layout, fragment).commit();
+            mBinding.fabCreateAccount.setVisibility(View.VISIBLE);
+            mBinding.btnJoinCommunity.setVisibility(View.GONE);
+            mBinding.fabLock.setVisibility(View.GONE);
         }
-        return mUser;
-    }
-    private void loginUser(String email, String password) {
-        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
-            helper.authenticUser(email, password, mAPIInterface);
-            showProgress(true);
+        else if (fragment != null && view == mBinding.fabCreateAccount && ((RegisterationFragment) fragment).setData() != null) {
+            helper.register(((RegisterationFragment) fragment).setData(), mAPIInterface);
         }else {
-            mBinding.joinMember.joinForm.setVisibility(View.GONE);
-            mBinding.loginForm.setVisibility(View.VISIBLE);
+            mBinding.fabCreateAccount.setVisibility(View.GONE);
             mBinding.fabLock.setVisibility(View.VISIBLE);
-            mBinding.btnSubmit.setVisibility(View.GONE);
+            mBinding.btnJoinCommunity.setVisibility(View.VISIBLE);
         }
     }
+
+//    private void loginUser(String email, String password) {
+//        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
+//            helper.authenticUser(email, password, mAPIInterface);
+//            showProgress(true);
+//        }else {
+//            mBinding.joinMember.joinForm.setVisibility(View.GONE);
+//            mBinding.loginForm.setVisibility(View.VISIBLE);
+//            mBinding.fabLock.setVisibility(View.VISIBLE);
+//            mBinding.btnSubmit.setVisibility(View.GONE);
+//        }
+//    }
     @Override
     public void onSaveUserSuccessFully(boolean isRegistered) {
         if (isRegistered) {
-            showProgress(false);
-            mBinding.joinMember.joinForm.setVisibility(View.GONE);
-            mBinding.loginForm.setVisibility(View.VISIBLE);
+//            showProgress(false);
+//            mBinding.joinMember.joinForm.setVisibility(View.GONE);
+//            mBinding.loginForm.setVisibility(View.VISIBLE);
             mBinding.fabLock.setVisibility(View.VISIBLE);
-            mBinding.btnSubmit.setVisibility(View.GONE);
+            mBinding.fabCreateAccount.setVisibility(View.GONE);
         }
     }
     @Override
     public void onFailedSavedUser(String error) {
-        showProgress(false);
+//        showProgress(false);
         showAlertDialogButtonClicked(error);
     }
+    public void authenticUser(String email, String pass){
+        helper.authenticUser(email,pass,mAPIInterface);
+        AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authBtnLayout);
+    }
+
     @Override
     public void onUserLoggedInSuccessFully(boolean isLogin, String token) {
         if (isLogin) {
@@ -370,24 +263,31 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Authorization Failed");
         builder.setMessage(message);
+        fragment = getSupportFragmentManager().findFragmentById(R.id.auth_main_layout);
         // add the buttons
         builder.setPositiveButton("Login", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                mBinding.joinMember.joinForm.setVisibility(View.GONE);
-                mBinding.loginForm.setVisibility(View.VISIBLE);
+                if (!(fragment instanceof LoginFragment)){
+                    fragment = new LoginFragment();
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.auth_main_layout, fragment).commit();
                 mBinding.fabLock.setVisibility(View.VISIBLE);
-                mBinding.btnSubmit.setVisibility(View.GONE);
+                mBinding.btnJoinCommunity.setVisibility(View.VISIBLE);
+                mBinding.fabCreateAccount.setVisibility(View.GONE);
                 dialogInterface.dismiss();
             }
         });
         builder.setNegativeButton("Register", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                mBinding.joinMember.joinForm.setVisibility(View.VISIBLE);
-                mBinding.btnSubmit.setVisibility(View.VISIBLE);
-                mBinding.loginForm.setVisibility(View.GONE);
+                if (!(fragment instanceof RegisterationFragment)){
+                    fragment = new RegisterationFragment();
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.auth_main_layout, fragment).commit();
+                mBinding.fabCreateAccount.setVisibility(View.VISIBLE);
                 mBinding.fabLock.setVisibility(View.GONE);
+                mBinding.btnJoinCommunity.setVisibility(View.GONE);
                 dialogInterface.dismiss();
             }
         });
@@ -397,21 +297,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
     @Override
     public void onFailedUserLoggedIn(String error) {
-        showProgress(false);
+//        showProgress(false);
         showAlertDialogButtonClicked(error);
         Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
-    public boolean getErrorField(EditText field) {
-        View focusView;
-        if (!TextUtils.isEmpty(field.getText().toString())) {
-            return true;
-        } else {
-            field.setError(getString(R.string.error_field_required));
-            focusView = field;
-            focusView.requestFocus();
-            return false;
-        }
-    }
+
     @Override
     public void onCurrentUserLoadedSuccessFully(boolean isLogin, User user) {
         AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authBtnLayout);
@@ -421,6 +311,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public void onFailedLoadingCurrentUser(String error) {
         AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authBtnLayout);
     }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,

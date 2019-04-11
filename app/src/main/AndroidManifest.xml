@@ -48,11 +48,11 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">
         </activity>
+        <!--<activity-->
+            <!--android:name=".authintication.LoginActivity"-->
+            <!--android:label="@string/title_activity_login"/>-->
         <activity
             android:name=".authintication.LoginActivity"
-            android:label="@string/title_activity_login"/>
-        <activity
-            android:name=".LandingActivity"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round">
             <intent-filter>
