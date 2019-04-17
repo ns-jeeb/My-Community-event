@@ -5,15 +5,20 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.facebook.stetho.common.android.FragmentCompatUtil;
 import com.jeeb.mycommunityevents.R;
 import com.jeeb.mycommunityevents.RetrofitAPIInterface;
 import com.jeeb.mycommunityevents.databinding.FragmentRegisterationBinding;
+import com.jeeb.mycommunityevents.fragments.UtilFragment;
 
 public class RegisterationFragment extends Fragment implements View.OnClickListener {
 
@@ -28,18 +33,22 @@ public class RegisterationFragment extends Fragment implements View.OnClickListe
     public RegisterationFragment() {
         // Required empty public constructor
     }
+    public static RegisterationFragment newInstance() {
+        RegisterationFragment fragment = new RegisterationFragment();
+        Bundle args = new Bundle();
 
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_registeration,container,false);
         return mBinding.getRoot();
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(User user) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onFragmentInteraction(user);
         }
     }
 
@@ -65,36 +74,35 @@ public class RegisterationFragment extends Fragment implements View.OnClickListe
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(User user);
     }
 
     public User setData(){
         mUser = new User();
         User.UserCommId userCommId = new User.UserCommId();
 
-        if (!validatePasswordField(mBinding.joinMember.joinPassword) || !validateEmailField(mBinding.joinMember.joinEmail) ||
-                !getErrorField(mBinding.joinMember.fName) || !getErrorField(mBinding.joinMember.joinLName) ||
-                !getErrorField(mBinding.joinMember.joinAddress) || !getErrorField(mBinding.joinMember.joinCity) ||
-                !getErrorField(mBinding.joinMember.joinPostalCode) || !getErrorField(mBinding.joinMember.joinProvince) ||
-                !getErrorField(mBinding.joinMember.joinHomePho) || !getErrorField(mBinding.joinMember.joinCellPho) ||
-                !getErrorField(mBinding.joinMember.joinAge) || !getErrorField(mBinding.joinMember.joinCommunity)) {
+        if (!validatePasswordField(mBinding.joinPassword) || !validateEmailField(mBinding.joinEmail) ||
+                !getErrorField(mBinding.fName) || !getErrorField(mBinding.joinLName) ||
+                !getErrorField(mBinding.joinAddress) || !getErrorField(mBinding.joinCity) ||
+                !getErrorField(mBinding.joinPostalCode) || !getErrorField(mBinding.joinProvince) ||
+                !getErrorField(mBinding.joinHomePho) || !getErrorField(mBinding.joinCellPho) ||
+                !getErrorField(mBinding.joinAge) || !getErrorField(mBinding.joinCommunity)) {
             return null;
         } else {
-            userCommId.set$oid(mBinding.joinMember.joinCommunity.getText().toString());
+            userCommId.set$oid(mBinding.joinCommunity.getText().toString());
             mUser.setEmail(mEmail);
             mUser.setPassword(mPass);
-            mUser.setFName(mBinding.joinMember.fName.getText().toString());
-            mUser.setLName(mBinding.joinMember.joinLName.getText().toString());
-            mUser.setAddress(mBinding.joinMember.joinAddress.getText().toString());
-            mUser.setCity(mBinding.joinMember.joinCity.getText().toString());
-            mUser.setPostalCode(mBinding.joinMember.joinPostalCode.getText().toString());
-            mUser.setProvince(mBinding.joinMember.joinProvince.getText().toString());
-            mUser.setHomePhone(mBinding.joinMember.joinHomePho.getText().toString());
-            mUser.setCellPhone(mBinding.joinMember.joinCellPho.getText().toString());
-            mUser.setUserCommId(mBinding.joinMember.joinCommunity.getText().toString());
+            mUser.setFName(mBinding.fName.getText().toString());
+            mUser.setLName(mBinding.joinLName.getText().toString());
+            mUser.setAddress(mBinding.joinAddress.getText().toString());
+            mUser.setCity(mBinding.joinCity.getText().toString());
+            mUser.setPostalCode(mBinding.joinPostalCode.getText().toString());
+            mUser.setProvince(mBinding.joinProvince.getText().toString());
+            mUser.setHomePhone(mBinding.joinHomePho.getText().toString());
+            mUser.setCellPhone(mBinding.joinCellPho.getText().toString());
+            mUser.setUserCommId(mBinding.joinCommunity.getText().toString());
             mUser.setGender("");
-            mUser.setAge(mBinding.joinMember.joinAge.getText().toString());
+            mUser.setAge(mBinding.joinAge.getText().toString());
         }
         return mUser;
     }
@@ -143,5 +151,32 @@ public class RegisterationFragment extends Fragment implements View.OnClickListe
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 6;
+    }
+    public void lunchLoginFragment(String fragmentTag){
+        if (getActivity() != null){
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            LoginFragment loginFragment = LoginFragment.newInstance();
+            if (getActivity() != null){
+                fragmentManager = getActivity().getSupportFragmentManager();
+            }
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//            UtilFragment.printActivityFragmentList(fragmentManager);
+
+            // Get fragment two if exist.
+//            Fragment fragment = UtilFragment.getFragmentByTagName(fragmentManager, fragmentTag);
+//            if(fragment != null) {
+//                Log.d(UtilFragment.TAG_NAME_FRAGMENT, "Fragment Two exist in back stack, will hide it now.");
+//                // Hide fragment two. Only hide not destroy.
+//                // When user type back menu in Fragment three,
+//                // this hidden Fragment will be shown again with input text saved.
+//                fragmentTransaction.hide(loginFragment);
+//            }
+            // Add Fragment with special tag name.
+            fragmentTransaction.replace(R.id.auth_main_layout, loginFragment, fragmentTag);
+            // Add fragment two in back stack.
+            fragmentTransaction.commit();
+        }
+
+
     }
 }
