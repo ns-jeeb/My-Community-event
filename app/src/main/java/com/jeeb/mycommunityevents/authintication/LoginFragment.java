@@ -139,7 +139,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             fragmentManager = getActivity().getSupportFragmentManager();
             if (view == mBinding.btnJoinCommunity) {
                 UtilFragment.lunchFragment("Registration_Fragment",fragmentManager,RegisterationFragment.newInstance());
-                UtilFragment.printActivityFragmentList(fragmentManager);
             }else if (mBinding.fabLock == view) {
                 if (loginUser()!= null){
                     ((LoginActivity)getActivity()).authenticate(loginUser());

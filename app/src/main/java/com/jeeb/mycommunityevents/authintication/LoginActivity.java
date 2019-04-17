@@ -43,7 +43,7 @@ import com.jeeb.mycommunityevents.utils.AppUtil;
 import com.jeeb.mycommunityevents.utils.ConstraintValues;
 
 @SuppressLint("RestrictedApi")
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>,LoginHelper.OnSaveUserInShearedPref,
+public class LoginActivity extends AppCompatActivity implements LoginHelper.OnSaveUserInShearedPref,
         LoginHelper.OnUserLogin, LoginHelper.OnGetCurrentUser, RegisterationFragment.OnFragmentInteractionListener,LoginFragment.OnFragmentInteractionListener {
 
     private ActivityLoginBinding mBinding;
@@ -100,41 +100,41 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onResume() {
         super.onResume();
     }
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-                // Select only mEmail addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary mEmail addresses first. Note that there won't be
-                // a primary mEmail address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-        addEmailsToAutoComplete(emails);
-    }
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-    }
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-//        mBinding.loginEmail.setAdapter(adapter);
-    }
+//    @Override
+//    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+//        return new CursorLoader(this,
+//                // Retrieve data rows for the device user's 'profile' contact.
+//                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
+//                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
+//                // Select only mEmail addresses.
+//                ContactsContract.Contacts.Data.MIMETYPE +
+//                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
+//                .CONTENT_ITEM_TYPE},
+//
+//                // Show primary mEmail addresses first. Note that there won't be
+//                // a primary mEmail address if the user hasn't specified one.
+//                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
+//    }
+//    @Override
+//    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+//        List<String> emails = new ArrayList<>();
+//        cursor.moveToFirst();
+//        while (!cursor.isAfterLast()) {
+//            emails.add(cursor.getString(ProfileQuery.ADDRESS));
+//            cursor.moveToNext();
+//        }
+//        addEmailsToAutoComplete(emails);
+//    }
+//    @Override
+//    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+//    }
+//    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
+//        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
+//        ArrayAdapter<String> adapter =
+//                new ArrayAdapter<>(LoginActivity.this,
+//                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
+////        mBinding.loginEmail.setAdapter(adapter);
+//    }
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
@@ -145,57 +145,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
     }
-//    @Override
-//    public void onClick(View view) {
-//        helper = new LoginHelper();
-//        helper.setOnSaveUserInShearedPref(this);
-//        helper.setOnUserLogin(this);
-//        helper.setCurrentUser(this);
-//        editor = preferences.edit();
-//        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.auth_main_layout);
-//        if (mBinding.fabLock == view) {
-//            if (!(fragment instanceof LoginFragment)){
-//                fragment = LoginFragment.newInstance();
-//                mFragManager.beginTransaction().add(R.id.auth_main_layout,fragment).addToBackStack(null).commit();
-//            }
-//            ((LoginFragment)fragment).loginUser();
-//        } else if (view == mBinding.btnJoinCommunity) {
-//
-//            ((RegisterationFragment)fragment).lunchLoginFragment("");
-////            fragment = new RegisterationFragment();
-////            UtilFragment.printActivityFragmentList(mFragManager);
-////            mFragManager.beginTransaction().add(R.id.auth_main_layout,fragment).addToBackStack(null).commit();
-//            mBinding.fabCreateAccount.setVisibility(View.VISIBLE);
-//            mBinding.btnJoinCommunity.setVisibility(View.GONE);
-//        }
-//        else if (fragment != null && view == mBinding.fabCreateAccount && ((RegisterationFragment) fragment).setData() != null) {
-//            helper.register(((RegisterationFragment) fragment).setData(), mAPIInterface);
-//        }else {
-//            mBinding.fabCreateAccount.setVisibility(View.GONE);
-//            mBinding.btnJoinCommunity.setVisibility(View.VISIBLE);
-//        }
-//    }
-
-//    private void loginUser(String email, String password) {
-//        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
-//            helper.authenticUser(email, password, mAPIInterface);
-//            showProgress(true);
-//        }else {
-//            mBinding.joinMember.joinForm.setVisibility(View.GONE);
-//            mBinding.loginForm.setVisibility(View.VISIBLE);
-//            mBinding.fabLock.setVisibility(View.VISIBLE);
-//            mBinding.btnSubmit.setVisibility(View.GONE);
-//        }
-//    }
     @Override
     public void onSaveUserSuccessFully(boolean isRegistered) {
         if (isRegistered) {
-//            mBinding.fabCreateAccount.setVisibility(View.GONE);
+            AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authMainLayout);
+            UtilFragment.lunchFragment("Login_Fragment",getSupportFragmentManager(),LoginFragment.newInstance());
         }
     }
     @Override
     public void onFailedSavedUser(String error) {
-//        showProgress(false);
+        AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authMainLayout);
         showAlertDialogButtonClicked(error);
     }
 
@@ -242,9 +201,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
     @Override
     public void onFailedUserLoggedIn(String error) {
-//        showProgress(false);
         showAlertDialogButtonClicked(error);
-//        AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authBtnLayout);
+        AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authMainLayout);
         Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
 
@@ -268,6 +226,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (helper != null){
             AppUtil.showProgress(true,this,mBinding.loginProgress,mBinding.authMainLayout);
             helper.authenticUser(user.getEmail(),user.getPassword(),mAPIInterface);
+        }
+    }
+    public void registerUser(User user) {
+        if (helper != null){
+            AppUtil.showProgress(true,this,mBinding.loginProgress,mBinding.authMainLayout);
+            helper.register(user, mAPIInterface);
         }
     }
 

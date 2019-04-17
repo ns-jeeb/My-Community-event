@@ -44,6 +44,7 @@ public class RegisterationFragment extends Fragment implements View.OnClickListe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_registeration,container,false);
+        mBinding.fabCreateAccount.setOnClickListener(this);
         return mBinding.getRoot();
     }
     public void onButtonPressed(User user) {
@@ -70,7 +71,13 @@ public class RegisterationFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-
+        if (getActivity() == null) {
+            return;
+        }
+        if (v == mBinding.fabCreateAccount) {
+            setData();
+            ((LoginActivity)getActivity()).registerUser(setData());
+        }
     }
 
     public interface OnFragmentInteractionListener {
@@ -152,31 +159,5 @@ public class RegisterationFragment extends Fragment implements View.OnClickListe
         //TODO: Replace this with your own logic
         return password.length() > 6;
     }
-    public void lunchLoginFragment(String fragmentTag){
-        if (getActivity() != null){
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            LoginFragment loginFragment = LoginFragment.newInstance();
-            if (getActivity() != null){
-                fragmentManager = getActivity().getSupportFragmentManager();
-            }
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//            UtilFragment.printActivityFragmentList(fragmentManager);
 
-            // Get fragment two if exist.
-//            Fragment fragment = UtilFragment.getFragmentByTagName(fragmentManager, fragmentTag);
-//            if(fragment != null) {
-//                Log.d(UtilFragment.TAG_NAME_FRAGMENT, "Fragment Two exist in back stack, will hide it now.");
-//                // Hide fragment two. Only hide not destroy.
-//                // When user type back menu in Fragment three,
-//                // this hidden Fragment will be shown again with input text saved.
-//                fragmentTransaction.hide(loginFragment);
-//            }
-            // Add Fragment with special tag name.
-            fragmentTransaction.replace(R.id.auth_main_layout, loginFragment, fragmentTag);
-            // Add fragment two in back stack.
-            fragmentTransaction.commit();
-        }
-
-
-    }
 }
