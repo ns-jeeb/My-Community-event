@@ -53,4 +53,5 @@ android {
 
 dependencies {
     implementation 'com.android.support:support-v4:28.+'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }

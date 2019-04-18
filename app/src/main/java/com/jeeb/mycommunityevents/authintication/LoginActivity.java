@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,12 +38,13 @@ import com.jeeb.mycommunityevents.R;
 import com.jeeb.mycommunityevents.RetrofitAPIClient;
 import com.jeeb.mycommunityevents.RetrofitAPIInterface;
 import com.jeeb.mycommunityevents.databinding.ActivityLoginBinding;
+import com.jeeb.mycommunityevents.fragments.UtilFragment;
 import com.jeeb.mycommunityevents.utils.AppUtil;
 import com.jeeb.mycommunityevents.utils.ConstraintValues;
 
 @SuppressLint("RestrictedApi")
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>,OnClickListener,LoginHelper.OnSaveUserInShearedPref,
-        LoginHelper.OnUserLogin, LoginHelper.OnGetCurrentUser, RegisterationFragment.OnFragmentInteractionListener {
+public class LoginActivity extends AppCompatActivity implements LoginHelper.OnSaveUserInShearedPref,
+        LoginHelper.OnUserLogin, LoginHelper.OnGetCurrentUser, RegisterationFragment.OnFragmentInteractionListener,LoginFragment.OnFragmentInteractionListener {
 
     private ActivityLoginBinding mBinding;
     private RetrofitAPIInterface mAPIInterface;
@@ -49,7 +52,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private LoginHelper helper;
     private SharedPreferences preferences;
     private boolean registered;
-    private Fragment fragment;
+    private FragmentManager mFragManager;
 
 
     RadioGroup.OnCheckedChangeListener mRadioGender;
@@ -60,31 +63,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     };
     private String mToken;
+    private User mUser;
+    private Fragment fragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_login);
-        mBinding.fabCreateAccount.setVisibility(View.GONE);
+//        mBinding.fabCreateAccount.setVisibility(View.GONE);
         if (mAPIInterface == null) {
             mAPIInterface = RetrofitAPIClient.getClient().create(RetrofitAPIInterface.class);
         }
         if (helper == null) {
             helper = new LoginHelper();
         }
+        helper.setOnSaveUserInShearedPref(this);
+        helper.setOnUserLogin(this);
+        helper.setCurrentUser(this);
         preferences = getSharedPreferences("loggedIn", Context.MODE_PRIVATE);
         registered = preferences.getBoolean("registered", false);
         mBinding.rememberMe.setOnCheckedChangeListener(mRememberMe);
         mToken = preferences.getString("token","");
+        fragment = LoginFragment.newInstance();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.auth_main_layout);
-        if (fragment == null){
-            fragment = new LoginFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.auth_main_layout,fragment).commit();
-        }
-        mBinding.fabLock.setOnClickListener(this);
-        mBinding.btnJoinCommunity.setOnClickListener(this);
-        mBinding.fabCreateAccount.setOnClickListener(this);
+        fragmentTransaction.add(R.id.auth_main_layout, fragment, "Login_Fragment");
+        fragmentTransaction.commit();
     }
     @Override
     protected void onStart() {
@@ -92,160 +98,70 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
     @Override
     protected void onResume() {
-        mBinding.fabLock.setVisibility(View.VISIBLE);
-        mBinding.btnJoinCommunity.setVisibility(View.VISIBLE);
         super.onResume();
     }
 //    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        if (requestCode == ConstraintValues.REQUEST_READ_CONTACTS) {
-//            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-////                populateAutoComplete();
-//            }
+//    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+//        return new CursorLoader(this,
+//                // Retrieve data rows for the device user's 'profile' contact.
+//                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
+//                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
+//                // Select only mEmail addresses.
+//                ContactsContract.Contacts.Data.MIMETYPE +
+//                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
+//                .CONTENT_ITEM_TYPE},
+//
+//                // Show primary mEmail addresses first. Note that there won't be
+//                // a primary mEmail address if the user hasn't specified one.
+//                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
+//    }
+//    @Override
+//    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+//        List<String> emails = new ArrayList<>();
+//        cursor.moveToFirst();
+//        while (!cursor.isAfterLast()) {
+//            emails.add(cursor.getString(ProfileQuery.ADDRESS));
+//            cursor.moveToNext();
 //        }
+//        addEmailsToAutoComplete(emails);
 //    }
-//    private boolean isEmailValid(String email) {
-//        //TODO: Replace this with your own logic
-//        return email.contains("@");
+//    @Override
+//    public void onLoaderReset(Loader<Cursor> cursorLoader) {
 //    }
-//    private boolean isPasswordValid(String password) {
-//        //TODO: Replace this with your own logic
-//        return password.length() > 6;
+//    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
+//        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
+//        ArrayAdapter<String> adapter =
+//                new ArrayAdapter<>(LoginActivity.this,
+//                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
+////        mBinding.loginEmail.setAdapter(adapter);
 //    }
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-//    private void showProgress(final boolean show) {
-//        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-//        // for very easy animations. If available, use these APIs to fade-in
-//        // the progress spinner.
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-//            int shortAnimTime = getResources().getInteger(android.R.integer.config_longAnimTime);
-////            mBinding.loginForm.setVisibility(show ? View.GONE : View.VISIBLE);
-//            mBinding.loginProgress.animate().setDuration(shortAnimTime).alpha(
-//                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-////                    mBinding.loginForm.setVisibility(show ? View.GONE : View.VISIBLE);
-//                }
-//            });
-//            mBinding.loginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-//            mBinding.loginProgress.animate().setDuration(shortAnimTime).alpha(
-//                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    mBinding.loginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-//                }
-//            });
-//        } else {
-//            // The ViewPropertyAnimator APIs are not available, so simply show
-//            // and hide the relevant UI components.
-//            mBinding.loginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-////            mBinding.loginForm.setVisibility(show ? View.GONE : View.VISIBLE);
-//        }
-//    }
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-                // Select only mEmail addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary mEmail addresses first. Note that there won't be
-                // a primary mEmail address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-        addEmailsToAutoComplete(emails);
-    }
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-    }
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-//        mBinding.loginEmail.setAdapter(adapter);
-    }
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-        finish();
-    }
-    @Override
-    public void onClick(View view) {
-        helper = new LoginHelper();
-        helper.setOnSaveUserInShearedPref(this);
-        helper.setOnUserLogin(this);
-        helper.setCurrentUser(this);
-        editor = preferences.edit();
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.auth_main_layout);
-        if (mBinding.fabLock == view) {
-            if (fragment instanceof LoginFragment){
-                AppUtil.showProgress(true,this,mBinding.loginProgress,mBinding.authBtnLayout);
-                ((LoginFragment)fragment).loginUser();
-            }
-
-        } else if (view == mBinding.btnJoinCommunity) {
-            fragment = new RegisterationFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.auth_main_layout, fragment).commit();
-            mBinding.fabCreateAccount.setVisibility(View.VISIBLE);
-            mBinding.btnJoinCommunity.setVisibility(View.GONE);
-            mBinding.fabLock.setVisibility(View.GONE);
-        }
-        else if (fragment != null && view == mBinding.fabCreateAccount && ((RegisterationFragment) fragment).setData() != null) {
-            helper.register(((RegisterationFragment) fragment).setData(), mAPIInterface);
+        if (getSupportFragmentManager().findFragmentById(R.id.auth_main_layout) instanceof RegisterationFragment){
+            UtilFragment.lunchFragment("Login_Fragment",getSupportFragmentManager(),LoginFragment.newInstance());
         }else {
-            mBinding.fabCreateAccount.setVisibility(View.GONE);
-            mBinding.fabLock.setVisibility(View.VISIBLE);
-            mBinding.btnJoinCommunity.setVisibility(View.VISIBLE);
+            finish();
         }
-    }
 
-//    private void loginUser(String email, String password) {
-//        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
-//            helper.authenticUser(email, password, mAPIInterface);
-//            showProgress(true);
-//        }else {
-//            mBinding.joinMember.joinForm.setVisibility(View.GONE);
-//            mBinding.loginForm.setVisibility(View.VISIBLE);
-//            mBinding.fabLock.setVisibility(View.VISIBLE);
-//            mBinding.btnSubmit.setVisibility(View.GONE);
-//        }
-//    }
+    }
     @Override
     public void onSaveUserSuccessFully(boolean isRegistered) {
         if (isRegistered) {
-//            showProgress(false);
-//            mBinding.joinMember.joinForm.setVisibility(View.GONE);
-//            mBinding.loginForm.setVisibility(View.VISIBLE);
-            mBinding.fabLock.setVisibility(View.VISIBLE);
-            mBinding.fabCreateAccount.setVisibility(View.GONE);
+            AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authMainLayout);
+            UtilFragment.lunchFragment("Login_Fragment",getSupportFragmentManager(),LoginFragment.newInstance());
         }
     }
     @Override
     public void onFailedSavedUser(String error) {
-//        showProgress(false);
+        AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authMainLayout);
         showAlertDialogButtonClicked(error);
-    }
-    public void authenticUser(String email, String pass){
-        helper.authenticUser(email,pass,mAPIInterface);
-        AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authBtnLayout);
     }
 
     @Override
     public void onUserLoggedInSuccessFully(boolean isLogin, String token) {
         if (isLogin) {
+            AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authMainLayout);
             helper.getCurrentUser(token,mAPIInterface);
             SharedPreferences preferences = getSharedPreferences("loggedIn", MODE_PRIVATE);
             if (mBinding.rememberMe.isChecked()) {
@@ -256,38 +172,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             intent.putExtra(ConstraintValues.TOKEN,token);
             startActivity(intent);
-            finish();
         }
     }
     public void showAlertDialogButtonClicked(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Authorization Failed");
         builder.setMessage(message);
-        fragment = getSupportFragmentManager().findFragmentById(R.id.auth_main_layout);
-        // add the buttons
+        if (mFragManager == null){
+            mFragManager = getSupportFragmentManager();
+        }
         builder.setPositiveButton("Login", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if (!(fragment instanceof LoginFragment)){
-                    fragment = new LoginFragment();
-                }
-                getSupportFragmentManager().beginTransaction().replace(R.id.auth_main_layout, fragment).commit();
-                mBinding.fabLock.setVisibility(View.VISIBLE);
-                mBinding.btnJoinCommunity.setVisibility(View.VISIBLE);
-                mBinding.fabCreateAccount.setVisibility(View.GONE);
+                mFragManager.beginTransaction().replace(R.id.auth_main_layout, LoginFragment.newInstance()).addToBackStack(null).commit();
                 dialogInterface.dismiss();
             }
         });
         builder.setNegativeButton("Register", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if (!(fragment instanceof RegisterationFragment)){
-                    fragment = new RegisterationFragment();
-                }
-                getSupportFragmentManager().beginTransaction().replace(R.id.auth_main_layout, fragment).commit();
-                mBinding.fabCreateAccount.setVisibility(View.VISIBLE);
-                mBinding.fabLock.setVisibility(View.GONE);
-                mBinding.btnJoinCommunity.setVisibility(View.GONE);
+                getSupportFragmentManager().beginTransaction().replace(R.id.auth_main_layout, RegisterationFragment.newInstance()).commit();
                 dialogInterface.dismiss();
             }
         });
@@ -297,24 +201,38 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
     @Override
     public void onFailedUserLoggedIn(String error) {
-//        showProgress(false);
         showAlertDialogButtonClicked(error);
+        AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authMainLayout);
         Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onCurrentUserLoadedSuccessFully(boolean isLogin, User user) {
-        AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authBtnLayout);
+        AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authMainLayout);
         KeepRequiredData.getInstance().setCurrentUser(user);
     }
     @Override
     public void onFailedLoadingCurrentUser(String error) {
-        AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authBtnLayout);
+        AppUtil.showProgress(false,this,mBinding.loginProgress,mBinding.authMainLayout);
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onFragmentInteraction(User user) {
+        AppUtil.showProgress(true,this,mBinding.loginProgress,mBinding.authMainLayout);
+        helper.authenticUser(mUser.getPassword(),mUser.getEmail(),mAPIInterface);
+    }
 
+    public void authenticate(User user) {
+        if (helper != null){
+            AppUtil.showProgress(true,this,mBinding.loginProgress,mBinding.authMainLayout);
+            helper.authenticUser(user.getEmail(),user.getPassword(),mAPIInterface);
+        }
+    }
+    public void registerUser(User user) {
+        if (helper != null){
+            AppUtil.showProgress(true,this,mBinding.loginProgress,mBinding.authMainLayout);
+            helper.register(user, mAPIInterface);
+        }
     }
 
     private interface ProfileQuery {
