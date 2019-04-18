@@ -58,22 +58,24 @@ public class DisplayInvitationFragment extends Fragment implements InvitationHel
         if (mBinding.invitationSwipeRefresh.isRefreshing()){
             mBinding.invitationSwipeRefresh.setRefreshing(false);
         }
-        if (isLoaded && fetchedInvited(KeepRequiredData.getInstance().getInvitations())!= null){
+        if (isLoaded){
             InvitationAdapter myInvAdapter = new InvitationAdapter(fetchedInvited(KeepRequiredData.getInstance().getInvitations()));
             LinearLayoutManager linearManInv = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-
             mBinding.listOfInvitation.setLayoutManager(linearManInv);
             mBinding.listOfInvitation.setAdapter(myInvAdapter);
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();
     }
+
     public InvitationRow fetchedInvited(InvitationRow invitationRow){
         Invitation invitation ;
         if (KeepRequiredData.getInstance().getCurrentUser().getId()!= null){
             if (invitationRow != null && invitationRow.getRows()!= null){
+                InvitationRow returnInvitations = new InvitationRow();
                 ArrayList<Invitation>invitations = new ArrayList<>();
                 for (int i = 0; i< invitationRow.getRows().size(); i++){
                     invitation = cleanTitle(invitationRow.getRows().get(i));
@@ -81,12 +83,12 @@ public class DisplayInvitationFragment extends Fragment implements InvitationHel
                         for (String s :invitation.getGuestNames()){
                             if (s.equalsIgnoreCase(KeepRequiredData.getInstance().getCurrentUser().getId())){
                                 invitations.add(invitation);
-                                invitationRow.setRows(invitations);
+                                returnInvitations.setRows(invitations);
                             }
                         }
                     }
                 }
-                return invitationRow;
+                return returnInvitations;
             }
         }
         return null;

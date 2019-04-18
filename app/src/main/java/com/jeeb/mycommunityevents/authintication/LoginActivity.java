@@ -84,6 +84,11 @@ public class LoginActivity extends AppCompatActivity implements LoginHelper.OnSa
         registered = preferences.getBoolean("registered", false);
         mBinding.rememberMe.setOnCheckedChangeListener(mRememberMe);
         mToken = preferences.getString("token","");
+        if (mToken != null &&!mToken.isEmpty()){
+            helper.getCurrentUser(mToken,mAPIInterface);
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
         fragment = LoginFragment.newInstance();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

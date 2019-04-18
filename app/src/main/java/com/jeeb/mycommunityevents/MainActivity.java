@@ -66,13 +66,10 @@ public class MainActivity extends AppCompatActivity implements
         mBinding = DataBindingUtil.setContentView(this,R.layout.activity_main);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mBinding.container.setAdapter(mSectionsPagerAdapter);
-
         mNotifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
         if (mAPIInterface == null) {
             mAPIInterface = RetrofitAPIClient.getClient().create(RetrofitAPIInterface.class);
         }
-
         if (helper == null){
             helper = new LoginHelper();
             helper.setCurrentUser(this);
@@ -90,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements
         }
         mHelperAllUsers.getAllUsers(mToken,mAPIInterface);
         AppUtil.showProgress(true,this,mBinding.progress,mBinding.container);
-
     }
 
 
