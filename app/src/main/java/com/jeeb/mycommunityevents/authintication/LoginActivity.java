@@ -53,9 +53,7 @@ public class LoginActivity extends AppCompatActivity implements LoginHelper.OnSa
     private SharedPreferences preferences;
     private boolean registered;
     private FragmentManager mFragManager;
-    private String mToken;
-    private User mUser;
-    private Fragment fragment;
+
 
     RadioGroup.OnCheckedChangeListener mRadioGender;
     CheckBox.OnCheckedChangeListener mRememberMe = new CompoundButton.OnCheckedChangeListener() {
@@ -64,6 +62,9 @@ public class LoginActivity extends AppCompatActivity implements LoginHelper.OnSa
             Toast.makeText(LoginActivity.this, "this will save your user name password", Toast.LENGTH_SHORT).show();
         }
     };
+    private String mToken;
+    private User mUser;
+    private Fragment fragment;
 
 
     @Override
