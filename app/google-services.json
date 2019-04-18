@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "723278116745",
+    "firebase_url": "https://mycommunity-ead9f.firebaseio.com",
+    "project_id": "mycommunity-ead9f",
+    "storage_bucket": "mycommunity-ead9f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:723278116745:android:021fb7145fa87625",
+        "android_client_info": {
+          "package_name": "com.jeeb.mycommunityevents"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "723278116745-ftm45gataqa2hn8nu3im4qktmhsbol7p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZygX9OgnvfaVEHFzgjxga9HUqCQirR-k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "723278116745-ftm45gataqa2hn8nu3im4qktmhsbol7p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

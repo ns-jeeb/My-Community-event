@@ -47,54 +47,5 @@
 
         </RelativeLayout>
 
-        <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/auth_btn_layout"-->
-            <!--app:layout_constraintHeight_percent=".15"-->
-            <!--app:layout_constraintBottom_toBottomOf="parent">-->
-
-            <!--<android.support.design.widget.FloatingActionButton-->
-                <!--android:id="@+id/fab_lock"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_margin="@dimen/fab_margin"-->
-                <!--app:srcCompat="@drawable/ic_lock"-->
-                <!--app:maxImageSize="35dp"-->
-                <!--app:fabSize="normal"-->
-                <!--app:backgroundTint="@color/colorPrimary"-->
-                <!--tools:ignore="VectorDrawableCompat"-->
-                <!--android:layout_alignParentEnd="true"-->
-                <!--android:layout_alignParentRight="true"/>-->
-
-            <!--<android.support.design.widget.FloatingActionButton-->
-                <!--android:id="@+id/fab_create_account"-->
-                <!--tools:ignore="VectorDrawableCompat"-->
-                <!--app:srcCompat="@drawable/ic_create_account"-->
-                <!--app:maxImageSize="35dp"-->
-                <!--android:layout_margin="@dimen/fab_margin"-->
-                <!--app:backgroundTint="@color/colorPrimary"-->
-                <!--app:fabSize="normal"-->
-                <!--style="?android:textAppearanceSmall"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:visibility="visible"-->
-                <!--android:textStyle="bold"/>-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/btn_join_community"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--style="?android:textAppearanceSmall"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_below="@+id/fab_lock"-->
-                <!--android:clickable="true"-->
-                <!--android:gravity="right"-->
-                <!--android:textSize="18sp"-->
-                <!--android:text="@string/registration_user"-->
-                <!--android:textStyle="bold"-->
-                <!--android:focusable="true"/>-->
-
-        <!--</RelativeLayout>-->
-
     </android.support.constraint.ConstraintLayout>
 </layout>
