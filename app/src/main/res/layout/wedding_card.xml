@@ -8,40 +8,40 @@
         android:layout_height="match_parent">
 
         <ScrollView
+            android:id="@+id/scroller_view_create"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
-            android:id="@+id/scroller_view_create">
+            android:visibility="visible">
 
             <android.support.constraint.ConstraintLayout
+                android:id="@+id/create_wedding_card_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/create_wedding_card_layout">
+                android:layout_height="wrap_content">
 
                 <EditText
+                    android:id="@+id/ed_title_bride_groom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/ed_title_bride_groom"
                     app:layout_constraintTop_toTopOf="parent"
                     android:textSize="20sp"
                     android:gravity="center"
                     android:text="Type of invitation (wedding)"/>
 
                 <EditText
+                    app:layout_constraintTop_toBottomOf="@id/ed_title_bride_groom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/ed_select_image"
                     android:src="@drawable/ic_launcher_background"
-                    app:layout_constraintTop_toBottomOf="@id/ed_title_bride_groom"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:text="image url"/>
 
                 <LinearLayout
+                    android:id="@+id/ed_b_g_first_name_layout"
+                    android:weightSum="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="1"
-                    android:id="@+id/ed_b_g_first_name_layout"
                     app:layout_constraintTop_toBottomOf="@id/ed_select_image"
                     android:orientation="horizontal">
 
@@ -68,21 +68,46 @@
 
                 </LinearLayout>
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_and"
-                    app:layout_constraintEnd_toStartOf="parent"
-                    app:layout_constraintStart_toEndOf="parent"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@+id/ed_b_g_first_name_layout"
-                    android:id="@+id/img_over_view"/>
+                    android:id="@+id/separator_layout"
+                    android:weightSum="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:background="@color/colorAccent"
+                        android:layout_width="50dp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_height="3dp"/>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_and"
+                        android:layout_gravity="center"
+                        android:id="@+id/and"/>
+                    <View
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginStart="15dp"
+                        android:background="@color/colorAccent"
+                        android:layout_gravity="center"
+                        android:layout_width="50dp"
+                        android:layout_height="3dp"/>
+
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/ed_b_g_last_name_layout"
                     android:weightSum="1"
-                    app:layout_constraintTop_toBottomOf="@+id/ed_b_g_first_name_layout"
+                    app:layout_constraintTop_toBottomOf="@+id/separator_layout"
                     android:orientation="horizontal">
 
                     <EditText

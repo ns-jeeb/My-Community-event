@@ -46,13 +46,13 @@ public class Invitation {
     @SerializedName("invi_card_img")
     @Expose
     private String inviCardImg;
-    @SerializedName("address")
+    @SerializedName("place_addres")
     @Expose
     private String address;
-    @SerializedName("name_place")
+    @SerializedName("place_name")
     @Expose
     private String namePlace;
-    @SerializedName("city_postal_province")
+    @SerializedName("postal_city_province")
     @Expose
     private String cityPostalProvince;
     @SerializedName("createdAt")
