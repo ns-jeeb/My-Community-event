@@ -45,6 +45,7 @@ public class DisplayInvitationFragment extends Fragment implements InvitationHel
     private String mToken;
     private RetrofitAPIInterface mRetrofitAPIInterface;
     private InvitationHelper mHelper;
+    private boolean noItemFound = false;
 
     public static DisplayInvitationFragment newInstance(String token) {
         DisplayInvitationFragment fragment = new DisplayInvitationFragment();
@@ -152,6 +153,17 @@ public class DisplayInvitationFragment extends Fragment implements InvitationHel
                 mBinding.invitationSwipeRefresh.setRefreshing(true);
             }
         });
+        mBinding.txtNoItem.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (noItemFound){
+                    mBinding.txtNoItem.setVisibility(View.VISIBLE);
+                }else {
+                    mBinding.txtNoItem.setVisibility(View.GONE);
+                }
+            }
+        },2000);
+
         return mBinding.getRoot();
     }
     @Override
@@ -212,11 +224,13 @@ public class DisplayInvitationFragment extends Fragment implements InvitationHel
         }
         @Override
         public int getItemCount() {
-            if (mInvitationRow.getRows()== null && mInvitationRow.getRows().size() == 0){
-                return 0;
-            }else {
+            if (mInvitationRow.getRows()!= null && mInvitationRow.getRows().size() != 0){
+                noItemFound = false;
                 return mInvitationRow.getRows().size();
+            }else {
+                noItemFound = true;
             }
+            return 0;
         }
         @Override
         public void onItemClick(View view) {
