@@ -39,7 +39,7 @@ import com.jeeb.mycommunity.invitation.Invitation;
 import com.jeeb.mycommunity.invitation.InvitationHelper;
 import com.jeeb.mycommunity.invitation.fragments.CreateInvitationFragment;
 import com.jeeb.mycommunity.invitation.fragments.MeemonyFragment;
-import com.jeeb.mycommunity.invitation.fragments.PreviewInvitationBackPressed;
+import com.jeeb.mycommunity.invitation.fragments.DisplayInvitationFragment;
 import com.jeeb.mycommunity.utils.AppUtil;
 import com.jeeb.mycommunity.utils.ConstraintValues;
 
@@ -364,7 +364,7 @@ public class CreateInvitationActivity extends AppCompatActivity implements Invit
             mBinding.invitationType.setVisibility(View.GONE);
 
             mBinding.fabSelected.setVisibility(View.VISIBLE);
-            replaceFragment(PreviewInvitationBackPressed.newInstance(infos));
+            replaceFragment(DisplayInvitationFragment.newInstance(infos));
 
         }else if (tag.equals("Meemony")){
         }
