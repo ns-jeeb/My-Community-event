@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.jeeb.mycommunity.KeepRequiredData;
 import com.jeeb.mycommunity.R;
 import com.jeeb.mycommunity.RetrofitAPIClient;
@@ -235,6 +236,7 @@ public class DisplayInvitationFragment extends Fragment implements InvitationHel
         @Override
         public void onItemClick(View view) {
             view.setVisibility(View.VISIBLE);
+
         }
         public class InvtionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             InvitationItemBinding binding;
@@ -244,7 +246,7 @@ public class DisplayInvitationFragment extends Fragment implements InvitationHel
             }
             public void binding(List<Invitation> invitations, int i) {
                 binding.txtMessage.setText(invitations.get(i).getTitle());
-                binding.txtTitleBrideGroom.setText(invitations.get(i).getGroomName()+" "+invitations.get(i).getBrideName());
+//                binding.txtTitleBrideGroom.setText(invitations.get(i).getGroomName()+" "+invitations.get(i).getBrideName());
                 binding.txtBrideFirstName.setText(invitations.get(i).getBrideName());
                 binding.txtGroomFirstName.setText(invitations.get(i).getGroomName());
                 binding.txtBrideLastName.setText(invitations.get(i).getGroomLName());
@@ -252,6 +254,7 @@ public class DisplayInvitationFragment extends Fragment implements InvitationHel
                 binding.txtTime.setText(invitations.get(i).getDateTime());
                 binding.txtNameOfPlace.setText(invitations.get(i).getNamePlace());
                 binding.txtCityOfPostalProvince.setText(invitations.get(i).getCityPostalProvince());
+                spliteDate(invitations.get(i));
 //                Glide.with(getActivity()).load(R.drawable.ic_lock_open).into(binding.imgBrideGroom);
                 binding.txtAddress.setText(invitations.get(i).getAddress());
                 itemView.setOnClickListener(this);
@@ -259,8 +262,26 @@ public class DisplayInvitationFragment extends Fragment implements InvitationHel
             @Override
             public void onClick(View view) {
                 onClickLister.onItemClick(binding.scrollerViewPreview);
+                String guestName = KeepRequiredData.getInstance().getCurrentUser().getFName()+" "+KeepRequiredData.getInstance().getCurrentUser().getLName();
+                binding.txtMessage.setText(guestName + " You are invited!");
+            }
+            public void spliteDate(Invitation invitation){
+                String day, month,year;
+                if (invitation!=null){
+                    String [] date = invitation.getDateTime().split(" ");
+                    String []time = invitation.getDateTime().split(":");
+                    day = date[0];
+                    month = date[1];
+                    year = date[2];
+                    binding.txtDay.setText(day);
+                    binding.txtMonth.setText(month);
+                    binding.txtYear.setText(year);
+                    binding.txtTime.setText(date[3]+":"+time[1]+" "+time[2]);
+                }
+
             }
         }
+
     }
     public interface OnInvitationItemClickLister {
         void onItemClick(View view);
