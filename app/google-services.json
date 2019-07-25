@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "1031540479670",
+    "firebase_url": "https://jeebmycommunity.firebaseio.com",
+    "project_id": "jeebmycommunity",
+    "storage_bucket": "jeebmycommunity.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031540479670:android:42f6acd5d678ed16",
+        "android_client_info": {
+          "package_name": "com.jeeb.mycommunity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1031540479670-ouqvfa4jav0sqh8ml0por4vbefsvcuiq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jeeb.mycommunity",
+            "certificate_hash": "b4e7c73d01e35b098e937b30116a77f1be025a05"
+          }
+        },
+        {
+          "client_id": "1031540479670-9qv0kqlp5c9689fl0g59lfopgijmcoho.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jeeb.mycommunity",
+            "certificate_hash": "3cfc25f6404a468d7142471ff6f495e7c8ec5e78"
+          }
+        },
+        {
+          "client_id": "1031540479670-4tfp999bvuhpi8i8dvuadl51jqbh45no.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKY4MWKaBuQx37kH7K5nDageI58nOHQn8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1031540479670-4tfp999bvuhpi8i8dvuadl51jqbh45no.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

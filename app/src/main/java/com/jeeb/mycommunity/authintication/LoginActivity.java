@@ -87,6 +87,7 @@ public class LoginActivity extends AppCompatActivity implements LoginHelper.OnSa
     @Override
     protected void onStart() {
         super.onStart();
+
     }
     @Override
     protected void onResume() {
@@ -129,13 +130,11 @@ public class LoginActivity extends AppCompatActivity implements LoginHelper.OnSa
 //    }
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
         if (getSupportFragmentManager().findFragmentById(R.id.auth_main_layout) instanceof RegisterationFragment){
             UtilFragment.lunchFragment("Login_Fragment",getSupportFragmentManager(),LoginFragment.newInstance());
         }else {
             finish();
         }
-
     }
     @Override
     public void onSaveUserSuccessFully(boolean isRegistered) {
