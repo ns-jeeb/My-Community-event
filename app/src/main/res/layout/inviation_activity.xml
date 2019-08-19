@@ -56,6 +56,13 @@
                 android:visibility="gone"/>
 
         </android.support.constraint.ConstraintLayout>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_select_guests"
+            android:text="select your guests"
+            app:layout_constraintBottom_toTopOf="@+id/fab_selected"
+            />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"

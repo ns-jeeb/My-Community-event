@@ -57,7 +57,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         populateAutoComplete();
         mBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_login,container,false);
         mBinding.btnJoinCommunity.setOnClickListener(this);
-        mBinding.fabLock.setOnClickListener(this);
+        mBinding.btnLogin.setOnClickListener(this);
         return mBinding.getRoot();
     }
     private void populateAutoComplete() {
@@ -132,7 +132,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             fragmentManager = getActivity().getSupportFragmentManager();
             if (view == mBinding.btnJoinCommunity) {
                 UtilFragment.lunchFragment("Registration_Fragment",fragmentManager,RegisterationFragment.newInstance());
-            }else if (mBinding.fabLock == view) {
+            }else if (mBinding.btnLogin == view) {
                 if (loginUser()!= null){
                     ((LoginActivity)getActivity()).authenticate(loginUser());
                 }

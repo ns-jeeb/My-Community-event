@@ -279,6 +279,7 @@ public class CreateInvitationActivity extends AppCompatActivity implements Invit
         if (view == mBinding.fab) {
             launchUserListFragment();
             mBinding.fab.setVisibility(View.GONE);
+            mBinding.invitationType.setVisibility(View.GONE);
 //            sendNotification();
 //
 //            FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -296,6 +297,7 @@ public class CreateInvitationActivity extends AppCompatActivity implements Invit
 //            });
 
         }else if (view == mBinding.fabSelected){
+            mBinding.invitationType.setVisibility(View.GONE);
 
             if (usersDialog != null && usersDialog.getUserIds() != null && usersDialog.getUserIds().size()>0){
                 saveInvitation(usersDialog.getUserIds());
