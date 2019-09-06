@@ -30,7 +30,7 @@ import com.jeeb.mycommunity.community.CommunityHelper;
 import com.jeeb.mycommunity.databinding.ActivityMainBinding;
 import com.jeeb.mycommunity.fragments.MeetUpFragment;
 import com.jeeb.mycommunity.invitation.fragments.CreateInvitationFragment;
-import com.jeeb.mycommunity.fragments.FohtiahFragment;
+import com.jeeb.mycommunity.announcement.FohtiahFragment;
 import com.jeeb.mycommunity.invitation.fragments.ItemInvitationFragment;
 import com.jeeb.mycommunity.utils.AppUtil;
 import com.jeeb.mycommunity.utils.ConstraintValues;
@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements
                 case 1:
                     return "Meet up";
                 case 2:
-                    return "Announcement";
+                    return "AnnouncementActivity";
             }
             return null;
         }

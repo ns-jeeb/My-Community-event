@@ -23,7 +23,7 @@ import com.jeeb.mycommunity.RetrofitAPIInterface;
 import com.jeeb.mycommunity.authintication.User;
 import com.jeeb.mycommunity.databinding.InvitationItemBinding;
 import com.jeeb.mycommunity.databinding.ListInvationsUsersFragmentBinding;
-import com.jeeb.mycommunity.fragments.FohtiahFragment;
+import com.jeeb.mycommunity.announcement.FohtiahFragment;
 import com.jeeb.mycommunity.invitation.Invitation;
 import com.jeeb.mycommunity.invitation.InvitationHelper;
 import com.jeeb.mycommunity.invitation.InvitationRow;
