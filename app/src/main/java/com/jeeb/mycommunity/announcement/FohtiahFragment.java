@@ -1,4 +1,4 @@
-package com.jeeb.mycommunity.fragments;
+package com.jeeb.mycommunity.announcement;
 
 import android.content.Context;
 import android.net.Uri;

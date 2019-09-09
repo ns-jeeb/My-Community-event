@@ -5,8 +5,20 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp">
+        android:layout_height="wrap_content">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="400dp"
+            android:layout_height="100dp"
+            android:id="@+id/img_bride_groom"
+            android:layout_marginTop="20dp"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="in-the-name-of-allah.json"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/txt_message"
@@ -14,14 +26,15 @@
             android:layout_height="wrap_content"
             android:text="@string/txt_title_of_invitation"
             android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/img_bride_groom"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             tools:text="invitation"/>
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/scroller_view_preview"
+            android:background="@drawable/white_boarder"
             app:layout_constraintTop_toBottomOf="@+id/txt_message"
             tools:visibility="visible"
             android:visibility="gone">
@@ -31,11 +44,21 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/wedding_card_preview_layout">
 
-                <View
-                    android:background="@drawable/bg_khatam_al_quran_preview"
-                    android:id="@+id/bride_groom"
+
+
+                <com.airbnb.lottie.LottieAnimationView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="400dp"
+                    android:id="@+id/lottie_pew_pew"
+                    android:layout_marginTop="20dp"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="pew_pew.json"
+                    app:lottie_loop="true"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
 
                 <TextView
                     android:layout_width="match_parent"
@@ -46,19 +69,6 @@
                     android:gravity="center"
                     android:text="@string/honor_messages"/>
 
-                <com.airbnb.lottie.LottieAnimationView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:id="@+id/img_bride_groom"
-                    android:layout_marginTop="20dp"
-                    app:lottie_autoPlay="true"
-                    app:lottie_fileName="like.json"
-                    app:lottie_loop="true"
-                    app:layout_constraintTop_toBottomOf="@id/txt_title_bride_groom"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
-
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -66,7 +76,7 @@
                     android:gravity="center"
                     android:layout_marginTop="20dp"
                     android:id="@+id/bride_name_layout"
-                    app:layout_constraintTop_toBottomOf="@id/img_bride_groom"
+                    app:layout_constraintTop_toBottomOf="@id/txt_title_bride_groom"
                     android:orientation="horizontal">
 
                     <TextView
